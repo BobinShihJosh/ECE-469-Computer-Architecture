@@ -1,19 +1,20 @@
-module fullAdder(A, B, cin, sum, cout, sub);
+`timescale 1ns/10ps
+
+module fullAdder(A, B, cin, sum, cout,sub);
 	input logic A, B, cin, sub;
 	output logic sum, cout;
 	
-	// use a mux to determine if we should subtract by using cin as a subtract signal
+	logic xor1,and1,and2,tmpB;
 	logic [1:0] fB;
-	logic tmpB;
 	assign fB[0] = B;
-	//assign fB[1] = ~B;
-	nand n2 (fB[1], fB[0], fB[0]);
-	
-	// sub signal is 1, return ~b
+	not #0.05 n2(fB[1], B);
 	mux_2to1 suboradd(.out(tmpB), .din(fB), .sel(sub));
 	
-	assign sum = A ^ tmpB ^ cin;
-	assign cout = (A & tmpB) | (cin & (A ^ tmpB));
+	xor #0.05 x1(xor1,A,tmpB);
+	xor #0.05 x2(sum,xor1,cin);
+	and #0.05 a1(and1,xor1,cin);
+	and #0.05 a2(and2, A,tmpB);
+	or #0.05 o1(cout,and1,and2);
 	
 endmodule 
 

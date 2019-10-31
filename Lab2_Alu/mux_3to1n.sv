@@ -1,3 +1,5 @@
+`timescale 1ns/10ps
+
 module mux_3to1n(out, din, sel);
     input logic [1:0] sel;
     input logic [2:0] din;

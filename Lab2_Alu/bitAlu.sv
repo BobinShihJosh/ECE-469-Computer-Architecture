@@ -1,3 +1,4 @@
+`timescale 1ns/10ps
 module bitAlu(A, B, cntrl, cin, cout, out);
 	input logic A, B;
 	input logic [2:0] cntrl;
@@ -9,9 +10,9 @@ module bitAlu(A, B, cntrl, cin, cout, out);
 	logic [5:0] tmps;
 	
 	fullAdder fa(.A(A), .B(B), .cin(cin), .sum(tmps[1]), .cout(cout), .sub(cntrl[0]));
-	and a(tmps[3], A, B); 
-	or b(tmps[4], A, B);
-	xor c(tmps[5], A, B);
+	and #0.05 a(tmps[3], A, B); 
+	or #0.05 b(tmps[4], A, B);
+	xor #0.05 c(tmps[5], A, B);
 	assign tmps[0] = B;
 	assign tmps[2] = tmps[1];
 	//{xorout, andout, addsubout, addsubout, orout, passB}
@@ -33,7 +34,7 @@ module bitAlu_testbench;
 		A = 1'b1; B = 1'b1; cin = 0; cntrl = 3'b000; #(delay);//passb cout=x, out=0;
 		A = 1'b1; B = 1'b0; cin = 1; cntrl = 3'b000; #(delay);//passb cout=x, out=0;
 		
-		A = 1'b1; B = 1'b0; cin = 0; cntrl = 3'b010; #(delay);//add cout=1, out=0;
+		A = 1'b1; B = 1'b1; cin = 0; cntrl = 3'b010; #(delay);//add cout=1, out=0;
 		A = 1'b0; B = 1'b1; cin = 0; cntrl = 3'b010; #(delay);//add cout=0, out=1;
 		A = 1'b1; B = 1'b1; cin = 1; cntrl = 3'b010; #(delay);//add cout=1, out=1;
 		
