@@ -2,6 +2,7 @@
 	Sign/zero extends any binary number to 64'bit binary number
 	sel = 1 sign extend
 	sel = 0 zero extend 
+	from single_cycle_CPU instantiate by Sign_Zero_Ext #(.Din_Lngth = _) ext1(...);
 */ 
 module Sign_Zero_Ext #(parameter Din_Lngth = 16) (Din, Sel, Dout);
 	input logic [Din_Lngth-1:0] Din;
