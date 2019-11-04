@@ -94,4 +94,15 @@ module mux32x64_64(in,out,sel);
 	endgenerate
 endmodule
 		
-
+module mux2_1_x #(parameter WIDTH = 64)(in0,in1,out,sel);
+	input logic [WIDTH-1:0] in1,in2;
+	input logic sel;
+	output logic [WIDTH-1:0] out;
+	
+	genvar k; 
+	generate 
+		for (k = 0; k<WIDTH; k++) begin :eachmux
+		 mux2_1 MUX({in0[k],in1[k]},out[k],sel);
+		end 
+	endgenerate 
+endmodule 
