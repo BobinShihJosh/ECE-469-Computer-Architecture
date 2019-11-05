@@ -115,7 +115,7 @@ module mux3_1_x #(parameter WIDTH = 64)(in0,in1,in2,out,sel);
 	genvar i; 
 	generate 
 		for (i = 0; i<WIDTH; i++) begin :eachmux
-			mux_3to1 MUX({in0[i],in1[i],in2[i]},out[k],sel);
+			mux_3to1 MUX(.out(out[i]),.din({in0[i],in1[i],in2[i]}),.sel(sel));
 		end 
 	endgenerate 
 endmodule 
