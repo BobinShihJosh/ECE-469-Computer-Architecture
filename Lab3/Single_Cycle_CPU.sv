@@ -20,7 +20,7 @@ module Single_Cycle_CPU(reset,clk);
 	
 	instructmem i1(address,instruction,clk);
 	
-	Consig control1(instr, OPID);
+	CtrlSngl control1(instr, OPID);
 	
 	REG PCreg(PCnew, PC , clk, '1);
 	
