@@ -3,14 +3,14 @@
 	How much PC incr by depends on control signals and imm addresses.
 */
 
-module PCPath (PC, unCondBr, BrTaken, Db, Imm19, Imm26, PCNew);
+module PCPath (PC, unCondBr, BrTaken, Db, Imm19, Imm26, PCNew, PC4);
 	input logic [63:0] PC, Db;
 	input logic unCondBr;
 	input logic [1:0] BrTaken;
 	input logic [18:0] Imm19;
 	input logic [25:0] Imm26;
 	
-	output logic [63:0] PCNew; 
+	output logic [63:0] PCNew, PC4; 
 	
 	// temp variabels for address processing and path
 	logic [63:0] extendedImm19, extendedImm26;
@@ -47,7 +47,10 @@ module PCPath (PC, unCondBr, BrTaken, Db, Imm19, Imm26, PCNew);
 	//PC = PC + 4 
 	alu alu2(.A(PCadd4), .B(4), .cntrl(3'b010), .result(tmpPCNewAdd4), .negative(Xflag[0]),
 		 .zero(Xflag[1]), .overflow(Xflag[2]), .carry_out(Xflag[3]));
-		 
+	
+	// wire out PC +4 for BR instruction 	
+	assign PC4 = tmpPCNewAdd4;
+	
 	/* control signal with BrTaken decide whether we want pc+4, pc+SignExtend(Imm<<2) or 
 		Db from regfile from instruction BR Rd
 		BrTaken = 00 or 01 -> PC = Db
