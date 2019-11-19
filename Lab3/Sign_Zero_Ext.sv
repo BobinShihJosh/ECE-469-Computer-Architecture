@@ -4,6 +4,8 @@
 	sel = 0 zero extend 
 	from single_cycle_CPU instantiate by Sign_Zero_Ext #(.Din_Lngth = _) ext1(...);
 */ 
+`timescale 1ns/10ps
+
 module Sign_Zero_Ext #(parameter Din_Lngth = 16) (Din, Sel, Dout);
 	input logic [Din_Lngth-1:0] Din;
 	input logic Sel;
@@ -53,4 +55,3 @@ module Sign_Zero_Ext_testbench ();
 	end
 
 endmodule 
-

@@ -5,40 +5,40 @@ module Single_Cycle_CPU(reset,clk);
 	input logic  reset;
 	input logic    clk;
 	
-	
-	output logic  zero,negative,overflow,carry_out;
-	
-	
-	logic [63:0]dataA,dataB,WriteData,ALUOut,PC,PCnew, PC4;
+	logic [63:0]dataA,dataB,WriteData,ALUOut,PC,PCNew,PC4,Db,PCAddr;
 	logic [31:0] instr;    //instruction code used for the CPU
-	logic [4:0] OPID;			//instruction ID decoded from control signal 
-	logic WrEn,ALUOp,MemWrite,read_enable;
-	logic [18:0] CondAddr19,Imm19;
-	logic [25:0] BrAddr26,Imm26;
-	logic [8:0] DAddr9;
+	logic [3:0] OPID,flags,FlagReg;			//instruction ID decoded from control signal 
+	logic Reg2Loc,ALUSrc,RegWrite,MemWrite,UncondBr,ConstSel,FlagEn,Reg3Loc; //muxes used in the CPU
+	logic [1:0] MemToReg,Br_Taken;
+	logic [18:0] Imm19;
+	logic [25:0] Imm26;
+	logic [8:0] Imm9;
 	logic [11:0] Imm12;
+	logic [4:0] Rm,Rd,Rn;
+	logic [2:0] ALUOP;
 	
-	instructmem i1(address,instruction,clk);
-	
-	CtrlSngl control1(instr, OPID);
-	
-	REG PCreg(PCnew, PC , clk, '1);
-	
-	//PC4 is the wire out signal, use it for BR instr
-	PCpath (OPID, PC, unCondBr, BrTaken, Db, Imm19, Imm26, PCNew, PC4);
-	
-	datapath (clk,Reg2Loc,ALUsrc,MemToReg, RegWrite,MemWrite, ConstSel,Reg3Loc,ALUOP,Imm9,Imm12,Imm19,Imm26,Rn,Rd,Rm,flags);
+	logic  zero,negative,overflow,carry_out;
 
-	REG (4) (flg,Flags,clk,FlagEn);
+	
+	instructmem i1(PC,instr,clk);
+	
+	CtrlSgnl control1(instr, OPID);
+	
+	//REG2 PCreg(PCNew, PC , clk, 1'b1,reset);
+	
+	PCPath pc1(.unCondBr(UncondBr),.*);
+	
+	datapath dp1(clk,Reg2Loc,ALUSrc,MemToReg, RegWrite,MemWrite, ConstSel,Reg3Loc,
+	ALUOP,Imm9,Imm12,Imm19,Imm26,Rn,Rd,Rm,flags,PC4,readEn);
+	
+	OPdecode op1(OPID, instr,flags,Imm9,Imm12,Imm19,Imm26,Rn,Rd,Rm,Reg2Loc,ALUSrc,
+	MemToReg,RegWrite,MemWrite,Br_Taken,UncondBr,ConstSel,FlagEn,Reg3Loc,ALUOP,readEn);
+
+
+	REG #(4) FLG(flags,FlagReg,clk,FlagEn);
+	
+	mux2_1_x br (.in0(PCNew),.in1(PC4),.out(PCAddr),.sel(Br_Taken));
 	
 	
-	/*regfile regA(dataA, dataB,WriteData,AddrA,AddrB, 
-	AddrW,WrEn,clk);
-	
-	alu AluA(dataA, dataB, ALUOp, ALUOut, negative, zero, overflow, carry_out); 
-	alu AluB(dataA, dataB, ALUOp, ALUOut, negative, zero, overflow, carry_out); 
-	alu AluC(dataA, dataB, ALUOp, ALUOut, negative, zero, overflow, carry_out); 
-	
-	
-	datamem MEM(ALUOut,MemWrite,read_enable,write_data,clk,xfer_size,read_data	);*/
-endmodule
+	endmodule 
+

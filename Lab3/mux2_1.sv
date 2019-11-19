@@ -1,5 +1,6 @@
 `timescale 1ns/10ps
-
+// sel = 1 get in[1] 
+//sel = 0 get in[0] 
 module mux2_1(in, out, sel);
 	output logic out;
 	input logic sel;
@@ -107,6 +108,19 @@ module mux2_1_x #(parameter WIDTH = 64)(in0,in1,out,sel);
 	endgenerate 
 endmodule 
 
+module mux4_1_x #(parameter WIDTH = 64)(in0,in1,in2,out,sel);
+	input logic [WIDTH-1:0] in0,in1,in2;
+	input logic sel;
+	output logic [WIDTH-1:0] out;
+	
+	genvar k; 
+	generate 
+		for (k = 0; k<WIDTH; k++) begin :eachmux
+		 mux4_1 MUX({in0[k],in1[k],in2[k],1'b0},out[k],sel);
+		end 
+	endgenerate 
+endmodule 
+
 module mux3_1_x #(parameter WIDTH = 64)(in0,in1,in2,out,sel);
 	input logic [WIDTH-1:0] in0,in1,in2;
 	input logic [1:0] sel;
@@ -115,7 +129,7 @@ module mux3_1_x #(parameter WIDTH = 64)(in0,in1,in2,out,sel);
 	genvar i; 
 	generate 
 		for (i = 0; i<WIDTH; i++) begin :eachmux
-			mux_3to1 MUX(.out(out[i]),.din({in0[i],in1[i],in2[i]}),.sel(sel));
+			mux_3to1 MUX(.out(out[i]),.din({in2[i],in1[i],in0[i]}),.sel(sel));
 		end 
 	endgenerate 
 endmodule 

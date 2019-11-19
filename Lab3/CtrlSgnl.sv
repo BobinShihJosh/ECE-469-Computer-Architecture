@@ -2,6 +2,8 @@
 Takes in instruction OP code from instruction memory and determines
 the control signals. 0-9 in binary represents the 10 instructions in order
 */
+`timescale 1ns/10ps
+
 module CtrlSgnl (instruction, OPOut);
 	input logic [31:0] instruction;
 	output logic [3:0] OPOut;
@@ -11,27 +13,27 @@ module CtrlSgnl (instruction, OPOut);
 	assign OpCode = instruction[31:21];
 	
 	always_comb begin
-		casez(OpCode) 
+		casex(OpCode) 
 			// ADDI Instruction
-			11'b1001000100? : OPOut = 4'b0000;
+			11'b1001000100x : OPOut = 4'b0000;
 			
 			// ADDS Instruction
 			11'b10101011000 : OPOut = 4'b0001;
 			
 			// B. LT Instruction 
-			11'b01010100??? : OPOut = 4'b0010;
+			11'b01010100xxx : OPOut = 4'b0010;
 			
 			// B Instruction
-			11'b000101????? : OPOut = 4'b0011;
+			11'b000101xxxxx : OPOut = 4'b0011;
 			
 			// BL Instruction
-			11'b100101????? : OPOut = 4'b0100;
+			11'b100101xxxxx : OPOut = 4'b0100;
 			
 			// BR Instruction
 			11'b11010110000 : OPOut = 4'b0101;
 			
 			// CBZ Instruction 
-			11'b10110100??? : OPOut = 4'b0110;
+			11'b10110100xxx : OPOut = 4'b0110;
 			
 			// LDUR Instruction
 			11'b11111000010 : OPOut = 4'b0111;
@@ -71,4 +73,3 @@ module CtrlSgnl_testbench();
 	end
 
 endmodule
-

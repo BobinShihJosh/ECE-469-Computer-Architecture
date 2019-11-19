@@ -1,3 +1,5 @@
+`timescale 1ns/10ps
+
 module regfile(ReadData1, ReadData2,WriteData,ReadRegister1,ReadRegister2, 
 	WriteRegister,RegWrite,clk);
 	input logic [4:0] ReadRegister1, ReadRegister2,WriteRegister;
@@ -45,6 +47,27 @@ endmodule
 		for(i=0; i < WIDTH; i++) begin: eachDff
 		   mux2_1 sel({in[i], out[i]},data[i] ,enable);
 			D_FF dffs(out[i], data[i], 1'b0, clk);
+		end
+	endgenerate
+	
+endmodule
+	
+
+	
+	module REG2 #(parameter WIDTH=64)(in, out, clk, enable,reset);
+	input logic [WIDTH-1:0] in;
+	input logic clk;
+	input logic enable,reset;
+	output logic [WIDTH-1:0] out;
+
+	logic [WIDTH-1:0] data;
+	
+	genvar i;
+	
+	generate
+		for(i=0; i < WIDTH; i++) begin: eachDff
+		   mux2_1 sel({in[i], out[i]},data[i] ,enable);
+			D_FF dffs(out[i], data[i], reset, clk);
 		end
 	endgenerate
 	
